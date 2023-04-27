@@ -1,10 +1,10 @@
 /**
- * 
+ *
  * Based on Josh Comeau's CSS Reset: https://www.joshwcomeau.com/css/custom-css-reset/.
- * 
+ *
  * Feel free to edit this file as needed.
- * 
- */ 
+ *
+ */
 
 *,
 *::before,
@@ -58,3 +58,15 @@ main {
   padding: 16px;
   margin: auto;
 }
+
+.add-btn {
+  background-color: white;
+  color: black;
+  font-size: 20px;
+  padding: 10px 60px;
+  border-radius: 5px;
+  margin: 10px 0px;
+  cursor: pointer;
+}
+
+

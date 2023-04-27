@@ -1,4 +1,5 @@
 require("dotenv").config();
+const db = require("./db.js");
 const express = require("express");
 const path = require("path");
 
@@ -7,13 +8,31 @@ const app = express();
 // Serves up all static and generated assets in ../client/dist.
 app.use(express.static(path.join(__dirname, "../client/dist")));
 
-/**** 
- * 
- * 
- * Other routes here....
- *
- * 
- */
+// Middleware
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-app.listen(process.env.PORT);
-console.log(`Listening at http://localhost:${process.env.PORT}`);
+app.post("/api/words", (req, res) => {
+  db.save(req.body)
+    .then(() => db.find())
+    .then((data) => {
+      res.status(201).json(data);
+    })
+    .catch((err) => {
+      res.sendStatus(400);
+    });
+});
+
+app.get("/api/words", (req, res) => {
+  db.find(req.body.query, req.body.sort)
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((err) => {
+      res.sendStatus(500);
+    });
+});
+
+let port = process.env.PORT || 3000;
+app.listen(port);
+console.log(`Listening at http://localhost:${port}`);
