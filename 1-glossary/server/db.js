@@ -33,7 +33,7 @@ const find = (query, sort) => {
 
   const results = Word.find(filter);
 
-  if (!sort) {
+  if (sort === "") {
     return results.exec();
   }
   const sortCriteria = sort === "asc" ? 1 : -1;
