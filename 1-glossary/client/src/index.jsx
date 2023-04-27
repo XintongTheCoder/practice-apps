@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
-import Add from "./components/Add.jsx";
+import GlossaryEditor from "./components/GlossaryEditor.jsx";
 import Search from "./components/Search.jsx";
-import WordsList from "./components/WordsList.jsx";
+import Glossary from "./components/Glossary.jsx";
 
 const App = () => {
   const [wordsList, setWordsList] = useState([]);
 
-  const handleAdd = (newWord) => {
+  const handleEdit = (newWord) => {
     fetch("http://localhost:3000/api/words", {
       method: "POST",
       headers: {
@@ -24,12 +24,53 @@ const App = () => {
       });
   };
 
+  const handleDelete = (word) => {
+    fetch("http://localhost:3000/api/words", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(word),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setWordsList(data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  const fetchWords = () => {
+    fetch("http://localhost:3000/api/words", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setWordsList(data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  useEffect(() => {
+    fetchWords();
+  }, []);
+
   return (
     <div>
       <h1>Glossary</h1>
-      <Add onAdd={handleAdd}></Add>
+      <GlossaryEditor isAdding={true} callback={handleEdit}></GlossaryEditor>
       <Search></Search>
-      <WordsList></WordsList>
+      <Glossary
+        words={wordsList}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      ></Glossary>
     </div>
   );
 };

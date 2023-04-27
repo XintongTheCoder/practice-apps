@@ -40,8 +40,13 @@ const find = (query, sort) => {
   return results.sort({ term: sortCriteria }).exec();
 };
 
+const deleteWord = (query) => {
+  return Word.deleteOne({ term: query.term });
+};
+
 // 3. Export the models
 module.exports.save = save;
 module.exports.find = find;
+module.exports.deleteWord = deleteWord;
 
 // 4. Import the models into any modules that need them

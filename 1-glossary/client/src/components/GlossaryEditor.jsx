@@ -1,36 +1,40 @@
 import React, { useState } from "react";
 
-const Add = ({ onAdd }) => {
+const GlossaryEditor = ({ isAdding, callback, originalWord }) => {
   const [newTerm, setNewTerm] = useState("");
   const [newDescription, setNewDescription] = useState("");
 
   return (
     <div className="add-container">
+      term:
       <input
         className="word-input"
         type="text"
-        placeholder="Add a word..."
+        placeholder={isAdding ? "Add a word..." : originalWord.term}
         value={newTerm}
         onChange={(e) => setNewTerm(e.target.value)}
+        disabled={isAdding ? "" : "disabled"}
       ></input>
+      description:
       <input
         className="description-input"
         type="text"
-        placeholder="Add a description..."
+        placeholder={
+          isAdding ? "Add a description..." : originalWord.description
+        }
         value={newDescription}
         onChange={(e) => setNewDescription(e.target.value)}
       ></input>
       <button
-        className="add-btn"
         onClick={(e) => {
           event.preventDefault();
-          onAdd({ term: newTerm, description: newDescription });
+          callback({ term: originalWord.term, description: newDescription });
         }}
       >
-        Add
+        {isAdding ? "Add" : "submit"}
       </button>
     </div>
   );
 };
 
-export default Add;
+export default GlossaryEditor;

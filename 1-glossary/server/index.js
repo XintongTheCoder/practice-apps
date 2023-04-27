@@ -33,6 +33,17 @@ app.get("/api/words", (req, res) => {
     });
 });
 
+app.delete("/api/words", (req, res) => {
+  db.deleteWord(req.body)
+    .then(() => db.find())
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((err) => {
+      res.sendStatus(500);
+    });
+});
+
 let port = process.env.PORT || 3000;
 app.listen(port);
 console.log(`Listening at http://localhost:${port}`);
