@@ -6,49 +6,49 @@ const Glossary = ({ words, onEdit, onDelete }) => {
 
   return (
     <div>
-      <div>
-        {words?.length ? (
-          words.map((word, index) => (
-            <div key={index}>
-              {isEditing ? (
-                <GlossaryEditor
-                  isAdding={false}
-                  callback={(newWord) => {
-                    onEdit(newWord);
-                    setIsEditing(!isEditing);
-                  }}
-                  originalWord={word}
-                ></GlossaryEditor>
-              ) : (
-                <div>
-                  <div>{word.term}</div>
-                  <div>{word.description}</div>
-                </div>
-              )}
+      {words?.length ? (
+        words.map((word, index) => (
+          <div key={index}>
+            {isEditing ? (
+              <GlossaryEditor
+                isAdding={false}
+                callback={(newWord) => {
+                  onEdit(newWord);
+                  setIsEditing(!isEditing);
+                }}
+                originalWord={word}
+              ></GlossaryEditor>
+            ) : (
               <div>
-                <button
-                  onClick={(event) => {
-                    event.preventDefault();
-                    onDelete(word);
-                  }}
-                >
-                  delete
-                </button>
+                <div>{word.term}</div>
+                <div>{word.description}</div>
+              </div>
+            )}
+            <div>
+              <button
+                onClick={(event) => {
+                  event.preventDefault();
+                  onDelete(word);
+                }}
+              >
+                delete
+              </button>
+              {isEditing ? null : (
                 <button
                   onClick={(event) => {
                     event.preventDefault();
                     setIsEditing(!isEditing);
                   }}
                 >
-                  {isEditing ? "submit" : "edit"}
+                  edit
                 </button>
-              </div>
+              )}
             </div>
-          ))
-        ) : (
-          <div>No words found</div>
-        )}
-      </div>
+          </div>
+        ))
+      ) : (
+        <div>No words found</div>
+      )}
     </div>
   );
 };
