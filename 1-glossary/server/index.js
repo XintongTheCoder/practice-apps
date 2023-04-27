@@ -24,7 +24,7 @@ app.post("/api/words", (req, res) => {
 });
 
 app.get("/api/words", (req, res) => {
-  db.find(req.body.query, req.body.sort)
+  db.find(req.query.query, req.query.sort)
     .then((data) => {
       res.status(200).json(data);
     })

@@ -28,7 +28,8 @@ const GlossaryEditor = ({ isAdding, callback, originalWord }) => {
       <button
         onClick={(e) => {
           event.preventDefault();
-          callback({ term: originalWord.term, description: newDescription });
+          const term = isAdding ? newTerm : originalWord.term;
+          callback({ term: term, description: newDescription });
         }}
       >
         {isAdding ? "Add" : "submit"}

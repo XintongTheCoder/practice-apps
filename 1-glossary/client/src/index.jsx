@@ -41,8 +41,8 @@ const App = () => {
       });
   };
 
-  const fetchWords = () => {
-    fetch("http://localhost:3000/api/words", {
+  const fetchWords = (query) => {
+    fetch(`http://localhost:3000/api/words?query=${query}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -65,7 +65,7 @@ const App = () => {
     <div>
       <h1>Glossary</h1>
       <GlossaryEditor isAdding={true} callback={handleEdit}></GlossaryEditor>
-      <Search></Search>
+      <Search onSearch={fetchWords}></Search>
       <Glossary
         words={wordsList}
         onEdit={handleEdit}
