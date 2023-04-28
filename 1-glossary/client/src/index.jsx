@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
+import { Pagination } from "@mui/material";
+import Stack from "@mui/material/Stack";
 import GlossaryEditor from "./components/GlossaryEditor.jsx";
 import Search from "./components/Search.jsx";
 import Glossary from "./components/Glossary.jsx";
@@ -8,54 +10,55 @@ const App = () => {
   const [wordsList, setWordsList] = useState([]);
   const [sortCriteria, setSortCriteria] = useState("");
   const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageCount, setPageCount] = useState(1);
+  const LIMIT = 10;
 
   const handleEdit = (newWord) => {
-    fetch("http://localhost:3000/api/words", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newWord),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setWordsList(data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
-
-  const handleDelete = (word) => {
-    fetch("http://localhost:3000/api/words", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(word),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setWordsList(data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
-
-  const fetchWords = (query, sortCriteria) => {
-    fetch(
-      `http://localhost:3000/api/words?query=${query}&sort=${sortCriteria}`,
-      {
-        method: "GET",
+    render(
+      fetch("http://localhost:3000/api/words", {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-      }
-    )
+        body: JSON.stringify(newWord),
+      })
+    );
+  };
+
+  const handleDelete = (word) => {
+    render(
+      fetch("http://localhost:3000/api/words", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(word),
+      })
+    );
+  };
+
+  const handleFetch = () => {
+    render(
+      fetch(
+        `http://localhost:3000/api/words?page=${page}&limit=${LIMIT}&query=${query}&sort=${sortCriteria}`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      )
+    );
+  };
+
+  const render = (res) => {
+    res
       .then((res) => res.json())
-      .then((data) => {
-        setWordsList(data);
+      .then(({ words, totalPages, currentPage }) => {
+        setWordsList(words);
+        setPageCount(totalPages);
       })
       .catch((err) => {
         console.error(err);
@@ -63,8 +66,8 @@ const App = () => {
   };
 
   useEffect(() => {
-    fetchWords(query, sortCriteria);
-  }, [query, sortCriteria]);
+    handleFetch();
+  }, [query, sortCriteria, page]);
 
   return (
     <div>
@@ -78,7 +81,6 @@ const App = () => {
           switch (sortCriteria) {
             case "":
               setSortCriteria("asc");
-              fetchWords();
               break;
             case "asc":
               setSortCriteria("desc");
@@ -98,6 +100,16 @@ const App = () => {
         onEdit={handleEdit}
         onDelete={handleDelete}
       ></Glossary>
+      <Stack spacing={2}>
+        <Pagination
+          count={pageCount}
+          page={page}
+          onChange={(event, newPage) => {
+            setPage(newPage);
+          }}
+          color="primary"
+        />
+      </Stack>
     </div>
   );
 };

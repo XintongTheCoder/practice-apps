@@ -23,21 +23,27 @@ const save = (word) => {
   return Word.findOneAndUpdate(filter, update, options);
 };
 
-const find = (query, sort) => {
+const find = (page, limit, query, sort) => {
   let filter = {};
-  if (query) {
+  if (query !== "") {
     filter = {
       $or: [{ term: { $regex: query } }, { description: { $regex: query } }],
     };
   }
 
-  const results = Word.find(filter);
-
-  if (sort === "") {
-    return results.exec();
+  let sortCriteria = {};
+  if (sort !== "") {
+    sortCriteria.term = sort === "asc" ? 1 : -1;
   }
-  const sortCriteria = sort === "asc" ? 1 : -1;
-  return results.sort({ term: sortCriteria }).exec();
+
+  return Promise.all([
+    Word.find(filter)
+      .sort(sortCriteria)
+      .limit(limit)
+      .skip((page - 1) * limit)
+      .exec(),
+    Word.countDocuments({}),
+  ]);
 };
 
 const deleteWord = (query) => {
